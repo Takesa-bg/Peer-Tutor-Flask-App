@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Welcome, {{ user.first_name }}!</h1>
+        
+        <!-- Assigned Tutors -->
+        <h2>Assigned Tutors</h2>
+        <ul>
+            {% for assignment in user.assigned_tutors %}
+                <li>{{ assignment.tutor.first_name }} {{ assignment.tutor.last_name }}</li>
+            {% endfor %}
+        </ul>
+        
+        <!-- JotForm Link -->
+        <p>To request for a peer tutor, click the link below:</p>
+        <a href="https://form.jotform.us/72324578307156" target="_blank">Access Form</a>
+        
+        <br>
+        
+        <!-- Logout Button -->
+        <form action="{{ url_for('logout') }}" method="GET" class="mt-3">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>   
+    </div>
+{% endblock %}
+
+
+
+
+
+

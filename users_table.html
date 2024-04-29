@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>User Management</h1>
+
+        <!-- User Table -->
+        <table id="userTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                <!-- User data will be populated here dynamically -->
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <ul class="pagination justify-content-center" id="pagination">
+            <!-- Pagination links will be dynamically added here -->
+        </ul>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function() {
+            loadUserData(1); // Load data for the first page initially
+
+            function loadUserData(page) {
+                $.ajax({
+                    url: '/users_table', // Update the URL to match your Flask route
+                    method: 'GET',
+                    data: { page: page },
+                    success: function(response) {
+                        var userData = response.users;
+                        var tableBody = $('#userTableBody');
+
+                        tableBody.empty(); // Clear existing table rows
+
+                        userData.forEach(function(user) {
+                            var row = '<tr>' +
+                                '<td>' + user.id + '</td>' +
+                                '<td>' + user.email + '</td>' +
+                                '<td>' + user.role + '</td>' +
+                                '</tr>';
+                            tableBody.append(row);
+                        });
+
+                        updatePagination(response.total_pages, page);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                        alert("Error: " + error); // Display error message
+                    }
+                });
+            }
+
+            function updatePagination(totalPages, currentPage) {
+                var pagination = $('#pagination');
+                pagination.empty(); // Clear existing pagination links
+
+                // Added logic to create previous and next buttons
+                var previousLi = '<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage - 1) + '">Previous</a></li>';
+                var nextLi = '<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '">Next</a></li>';
+                pagination.append(previousLi);
+
+                for (var i = 1; i <= totalPages; i++) {
+                    var liClass = (i === currentPage) ? 'page-item active' : 'page-item';
+                    var pageLink = '<a class="page-link" href="#" data-page="' + i + '">' + i + '</a>';
+                    if (i === currentPage) {
+                        pageLink = '<span class="page-link">' + i + '<span class="sr-only">(current)</span></span>';
+                    }
+                    var li = '<li class="' + liClass + '">' + pageLink + '</li>';
+                    pagination.append(li);
+                }
+
+                pagination.append(nextLi);
+
+                // Update page numbers when clicking on a different page number
+                $('.page-link').on('click', function(e) {
+                    e.preventDefault();
+                    var newPage = $(this).data('page');
+                    loadUserData(newPage);
+                });
+
+                // Update page numbers when clicking on previous or next buttons
+                $('.page-item a').on('click', function(e) {
+                    e.preventDefault();
+                    var newPage = $(this).data('page');
+                    if (newPage !== undefined) {
+                        loadUserData(newPage);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
+

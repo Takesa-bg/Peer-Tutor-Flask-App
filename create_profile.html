@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Create Profile{% endblock %}
+
+{% block content %}
+  <h1>Create Profile</h1>
+  <form method="POST" action="{{ url_for('create_profile') }}" enctype="multipart/form-data">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name" required><br>
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email" required><br>
+    <label for="phone_number">Phone Number:</label><br>
+    <input type="text" id="phone_number" name="phone_number"><br>
+    <label for="profile_picture">Profile Picture:</label><br>
+    <input type="file" id="profile_picture" name="profile_picture" accept="image/gif, image/jpeg, image/png, image/jpg" enctype="multipart/form-data"><br>  <label for="classes_tutoring">Classes Tutoring:</label><br>
+    <textarea id="classes_tutoring" name="classes_tutoring" rows="4" cols="50" required></textarea><br>
+    <input type="submit" value="Create Profile">
+  </form>
+{% endblock %}
+
+
+
+
+
+
+
+

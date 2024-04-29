@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Welcome, Admin!</h1>
+        
+        <!-- User Management -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <!-- User Table -->
+                <h2>User Management:</h2>
+                <div class="table-responsive">
+                    <table id="userTable" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.role }}</td>
+                                    <td>
+                                        <form class="roleForm" action="{{ url_for('users_table') }}" method="POST">
+                                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                                            <button type="submit" class="btn btn-primary btn-sm" name="action" value="promote">Promote</button>
+                                            <button type="submit" class="btn btn-danger btn-sm" name="action" value="demote">Demote</button>
+                                        </form>
+                                    </td>
+                              </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <!-- JotForm Submissions -->
+                <h2>JotForm Submissions:</h2>
+                <ul id="submissionsList">
+                    <!-- Submissions will be populated here dynamically -->
+                </ul>
+                <a href="{{ url_for('fetch_jotform_submissions') }}" class="btn btn-primary">Fetch JotForm Submissions</a>
+            </div>
+        </div>
+
+        <!-- Logout Button -->
+        <form action="{{ url_for('logout') }}" method="GET">
+            <button type="submit" class="btn btn-primary">Logout</button>
+        </form>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            loadSubmissions();
+
+            function loadSubmissions() {
+                $.ajax({
+                    url: '/fetch_jotform_submissions',
+                    method: 'GET',
+                    success: function(response) {
+                        var submissionsList = $('#submissionsList');
+                        submissionsList.empty(); // Clear existing submissions
+
+                        response.submissions.forEach(function(submission) {
+                            // You can modify this part to display the submissions data as per your requirements
+                            var row = $('<li></li>').text(JSON.stringify(submission)).addClass('list-group-item');
+                            submissionsList.append(row);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                        alert("Error: " + error); // Display error message
+                    }
+                });
+            }
+
+            // Attach an event listener to the 'Fetch JotForm Submissions' button
+            // It will call the loadSubmissions() function on click
+            $('a.btn-primary').on('click', loadSubmissions);
+        });
+    </script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Tutor Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Welcome, {{ user.first_name }}!</h1>
+    <p>This is the Tutor Dashboard.</p>
+      
+    <!-- Check if profile exists -->
+    {% if profile %}
+        <h2>Your Profile</h2>
+        <p>Name: {{ profile.name }}</p>
+        <p>Email: {{ profile.email }}</p>
+        <p>Phone Number: {{ profile.phone_number }}</p>
+        <p>Profile Picture: <img src="{{ profile.profile_picture }}" alt="Profile Picture"></p>
+        <p>Classes Tutoring: {{ profile.classes_tutoring }}</p> <!-- Update to match your Profile model -->
+        
+        <br>
+        
+        <!-- Edit Profile Button -->
+        <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">Edit Profile</a>
+        
+        <br>
+        <br>
+    {% else %}
+        <h2>No Profile Found</h2>
+        <p>You don't have a profile yet! Create one here!</p>
+        <a href="{{ url_for('create_profile') }}" class="btn btn-primary">Create Profile</a>
+    {% endif %}
+    
+    <!-- Navigation Buttons -->
+    <div class="mt-3">
+        <form action="{{ url_for('logout') }}" method="GET" class="ml-2">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+    
+    <!-- Assigned Students -->
+    <div class="container">
+        <h1>Assigned Students</h1>
+        {% for student in assigned_students %}
+            <div class="student-jotform">
+                <h2>{{ student.first_name }} {{ student.last_name }}</h2>
+                <p>Email: {{ student.email }}</p>
+                <!-- Display JotForm submission for the student here -->
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+
+
+
+
+
+
+
